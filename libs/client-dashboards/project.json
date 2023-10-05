@@ -1,0 +1,47 @@
+{
+  "name": "client-dashboards",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "prefix": "app",
+  "projectType": "library",
+  "sourceRoot": "libs/client-dashboards/src",
+  "tags": ["scope:client-dashboards", "type:feature"],
+  "targets": {
+    "lint": {
+      "executor": "@angular-eslint/builder:lint",
+      "options": {
+        "eslintConfig": "libs/client-dashboards/.eslintrc.json",
+        "lintFilePatterns": ["libs/client-dashboards/**/*.ts"]
+      },
+      "outputs": ["{options.outputFile}"]
+    },
+    "prettier-check": {
+      "executor": "./tools/executors/prettier:check",
+      "options": {
+        "config": ""
+      },
+      "outputs": ["{workspaceRoot}/dist/prettier/libs/client-dashboards"]
+    },
+    "stylelint-check": {
+      "executor": "./tools/executors/stylelint:check",
+      "options": {
+        "config": ""
+      },
+      "outputs": ["{workspaceRoot}/dist/stylelint/libs/client-dashboards"]
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "options": {
+        "jestConfig": "libs/client-dashboards/jest.config.ts",
+        "passWithNoTests": true
+      },
+      "outputs": ["{workspaceRoot}/coverage/libs/client-dashboards"]
+    },
+    "tsc-check": {
+      "executor": "./tools/executors/tsc:check",
+      "options": {
+        "tsConfig": "libs/client-dashboards/tsconfig.lib.json"
+      },
+      "outputs": ["{workspaceRoot}/dist/out-tsc/libs/client-dashboards"]
+    }
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "name": "client-directives",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "prefix": "app",
+  "projectType": "library",
+  "sourceRoot": "libs/client-directives/src",
+  "tags": ["scope:client-directives", "type:ui"],
+  "targets": {
+    "lint": {
+      "executor": "@angular-eslint/builder:lint",
+      "options": {
+        "eslintConfig": "libs/client-directives/.eslintrc.json",
+        "lintFilePatterns": ["libs/client-directives/**/*.ts"]
+      },
+      "outputs": ["{options.outputFile}"]
+    },
+    "prettier-check": {
+      "executor": "./tools/executors/prettier:check",
+      "options": {
+        "config": ""
+      },
+      "outputs": ["{workspaceRoot}/dist/prettier/libs/client-directives"]
+    },
+    "stylelint-check": {
+      "executor": "./tools/executors/stylelint:check",
+      "options": {
+        "config": ""
+      },
+      "outputs": ["{workspaceRoot}/dist/stylelint/libs/client-directives"]
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "options": {
+        "jestConfig": "libs/client-directives/jest.config.ts",
+        "passWithNoTests": true
+      },
+      "outputs": ["{workspaceRoot}/coverage/libs/client-directives"]
+    },
+    "tsc-check": {
+      "executor": "./tools/executors/tsc:check",
+      "options": {
+        "tsConfig": "libs/client-directives/tsconfig.lib.json"
+      },
+      "outputs": ["{workspaceRoot}/dist/out-tsc/libs/client-directives"]
+    }
+  }
+}

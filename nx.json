@@ -1,0 +1,122 @@
+{
+  "$schema": "./node_modules/nx/schemas/nx-schema.json",
+  "affected": {
+    "defaultBase": "main"
+  },
+  "cli": {
+    "cache": {
+      "enabled": true,
+      "environment": "all",
+      "path": ".angular/cache"
+    },
+    "warnings": {
+      "versionMismatch": false
+    }
+  },
+  "generators": {
+    "@nrwl/schematics:application": {
+      "framework": "angular",
+      "style": "scss",
+      "unitTestRunner": "jest"
+    },
+    "@nrwl/schematics:library": {
+      "style": "scss",
+      "unitTestRunner": "jest"
+    },
+    "@nrwl/web:application": {
+      "e2eTestRunner": "cypress",
+      "linter": "eslint",
+      "style": "scss",
+      "unitTestRunner": "jest"
+    },
+    "@nrwl/web:library": {
+      "linter": "eslint",
+      "style": "scss",
+      "unitTestRunner": "jest"
+    },
+    "@nx/angular:application": {
+      "e2eTestRunner": "cypress",
+      "linter": "eslint",
+      "style": "scss",
+      "unitTestRunner": "jest"
+    },
+    "@nx/angular:component": {
+      "changeDetection": "OnPush",
+      "inlineStyle": false,
+      "inlineTemplate": false,
+      "style": "scss"
+    },
+    "@nx/angular:library": {
+      "linter": "eslint",
+      "unitTestRunner": "jest"
+    }
+  },
+  "namedInputs": {
+    "default": ["{projectRoot}/**/*.ts", "{projectRoot}/**/*.scss", "{projectRoot}/**/*.html", "sharedGlobals"],
+    "prod": [
+      "default",
+      "!{projectRoot}/**/*.stories.ts",
+      "!{projectRoot}/**/*.spec.ts",
+      "!{projectRoot}/**/*.md",
+      "!{projectRoot}/tsconfig.e2e.json",
+      "!{projectRoot}/tsconfig.eslint.json",
+      "!{projectRoot}/tsconfig.spec.json",
+      "!{projectRoot}/tsconfig.json",
+      "!{projectRoot}/jest.config.ts",
+      "!{projectRoot}/.eslintrc.json"
+    ],
+    "projectLinterConfig": ["{projectRoot}/tsconfig.spec.json", "{projectRoot}/jest.config.ts"],
+    "projectTestConfig": ["{projectRoot}/tsconfig.eslint.json", "{projectRoot}/.eslintrc.json"],
+    "rootLinterConfig": [
+      "{workspaceRoot}/.eslintignore",
+      "{workspaceRoot}/.eslintrc.js",
+      "{workspaceRoot}/.eslintrc.*.js",
+      "{workspaceRoot}/.prettierignore",
+      "{workspaceRoot}/.prettierrc"
+    ],
+    "rootTestConfig": ["{workspaceRoot}/jest.config.ts", "{workspaceRoot}/jest.preset.js"],
+    "sharedGlobals": ["{workspaceRoot}/babel.config.json", "{workspaceRoot}/nx.json", "{workspaceRoot}/tsconfig.base.json"]
+  },
+  "newProjectRoot": "",
+  "npmScope": "app",
+  "targetDefaults": {
+    "build": {
+      "dependsOn": ["^build"],
+      "inputs": ["default", "^prod"]
+    },
+    "build-storybook": {
+      "inputs": [
+        "default",
+        "^prod",
+        "{workspaceRoot}/.storybook/**/*",
+        "{projectRoot}/.storybook/**/*",
+        "{projectRoot}/**/*.stories.ts",
+        "{projectRoot}/tsconfig.storybook.json"
+      ]
+    },
+    "e2e": {
+      "inputs": ["default", "^prod", "{projectRoot}/tsconfig.e2e.json"]
+    },
+    "lint": {
+      "inputs": ["default", "^prod", "projectLinterConfig", "rootLinterConfig"]
+    },
+    "test": {
+      "inputs": ["default", "^prod", "projectTestConfig", "rootTestConfig"]
+    }
+  },
+  "tasksRunnerOptions": {
+    "default": {
+      "options": {
+        "cacheDirectory": "/tmp/nx/nx-ng-starter",
+        "cacheableOperations": ["build", "lint", "test", "e2e", "tsc-check", "prettier-check", "stylelint-check"],
+        "parallel": 1,
+        "runtimeCacheInputs": ["node -v", "echo $IMPORTANT_ENV_VAR"]
+      },
+      "runner": "nx/tasks-runners/default"
+    }
+  },
+  "workspaceLayout": {
+    "appsDir": "apps",
+    "libsDir": "libs"
+  }
+}

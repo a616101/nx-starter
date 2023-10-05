@@ -1,0 +1,29 @@
+{
+  "name": "@rfprodz/client-pwa-offline",
+  "version": "1.0.14",
+  "description": "PWA offline feature for Angular clients.",
+  "keywords": [
+    "angular-module",
+    "angular-interceptor",
+    "angular-component"
+  ],
+  "homepage": "https://github.com/rfprod/nx-ng-starter",
+  "bugs": {
+    "url": "https://github.com/rfprod/nx-ng-starter/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rfprod/nx-ng-starter"
+  },
+  "license": "MIT",
+  "author": "rfprod <zoidenmacht@zoho.com>",
+  "dependencies": {
+    "tslib": "2.6.2"
+  },
+  "peerDependencies": {
+    "@angular/common": "16.2.7",
+    "@angular/core": "16.2.7",
+    "@angular/material": "16.2.6",
+    "@angular/router": "16.2.7"
+  }
+}

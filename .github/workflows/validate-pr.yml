@@ -1,0 +1,162 @@
+# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
+
+name: validate-pr
+
+on:
+  pull_request:
+    branches: [main]
+
+defaults:
+  run:
+    shell: bash
+
+concurrency:
+  group: ${{ github.head_ref }}.${{ github.sha }}.validate-pr
+  cancel-in-progress: true
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+
+    outputs:
+      changes: ${{ steps.check-changes.outputs.changes }}
+
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Setup environment
+        uses: ./.github/actions/setup-environment
+
+      - name: Check changes
+        id: check-changes
+        uses: ./.github/actions/check-changes
+        with:
+          premerge: 'true'
+          trunk: 'main'
+
+      - name: Validate commit messages
+        if: ${{ github.event.pull_request.user.login != 'dependabot[bot]' }}
+        run: |
+          git checkout -b premerge
+          git fetch origin main:main
+          npx --no-install commitlint --from main
+
+      - name: Validation contribution size
+        if: ${{ github.event.pull_request.user.login != 'dependabot[bot]' }}
+        uses: ./.github/actions/validate-contribution-size
+
+  lint:
+    needs: checks
+    runs-on: ubuntu-latest
+
+    outputs:
+      success: ${{ steps.check.outputs.success || 'true' }}
+
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Setup environment
+        uses: ./.github/actions/setup-environment
+
+      - name: Lint shell
+        if: fromJSON(needs.checks.outputs.changes).shelltools == 'true'
+        run: |
+          sudo apt install shellcheck
+          npx nx run tools:lint-shell
+
+      - name: Lint ts affected
+        run: npx nx affected --target lint --base origin/main
+
+      - name: Lint html affected
+        run: npx nx affected --target prettier-check --dryRun --base origin/main
+
+      - name: Set failure
+        id: check
+        if: failure()
+        run: echo "success='false'" >> $GITHUB_OUTPUT
+
+  test:
+    needs: checks
+    runs-on: ubuntu-latest
+
+    outputs:
+      success: ${{ steps.check.outputs.success || 'true' }}
+
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Setup environment
+        uses: ./.github/actions/setup-environment
+
+      - name: Compiler check affected
+        run: npx nx affected --target tsc-check --base origin/main
+
+      - name: Unit test affected
+        run: |
+          npx nx affected --target test --base origin/main --pass-with-no-tests --code-coverage --run-in-band --ci
+          npx nx run tools:coverage-stats
+          cat ./UNIT_COVERAGE.md >> $GITHUB_STEP_SUMMARY
+
+      - name: Set failure
+        id: check
+        if: failure()
+        run: echo "success='false'" >> $GITHUB_OUTPUT
+
+  build:
+    needs: checks
+    runs-on: ubuntu-latest
+
+    outputs:
+      success: ${{ steps.check.outputs.success || 'true' }}
+
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Setup environment
+        uses: ./.github/actions/setup-environment
+
+      - name: Build affected
+        run: npx nx affected --target build --base origin/main
+
+      - name: Build storybook affected
+        run: npx nx affected --target build-storybook --base origin/main --parallel 1
+
+      - name: Build global storybook
+        if: ${{ fromJSON(needs.checks.outputs.changes).dependencies == 'true' || fromJSON(needs.checks.outputs.changes).storybook == 'true' || fromJSON(needs.checks.outputs.changes).src == 'true' }}
+        run: npx nx run documentation:build-storybook
+
+      - name: Set failure
+        id: check
+        if: failure()
+        run: echo "success='false'" >> $GITHUB_OUTPUT
+
+  premerge:
+    needs: [lint, test, build]
+    if: always()
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check result
+        run: |
+          if [[ "$LINT_RESULT" != "true" || "$TEST_RESULT" != "true" || "$BUILD_RESULT" != "true" ]]; then exit 1; fi
+          echo "### :rocket: Premerge checks succeeded" >> $GITHUB_STEP_SUMMARY
+        env:
+          LINT_RESULT: ${{ needs.lint.outputs.success }}
+          TEST_RESULT: ${{ needs.test.outputs.success }}
+          BUILD_RESULT: ${{ needs.build.outputs.success }}

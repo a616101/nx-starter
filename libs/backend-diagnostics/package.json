@@ -1,0 +1,31 @@
+{
+  "name": "@rfprodz/backend-diagnostics",
+  "version": "1.0.24",
+  "description": "NestJS API diagnostics module.",
+  "keywords": [
+    "nestjs-controller",
+    "nestjs-service",
+    "nestjs-module",
+    "nestjs-events-gateway"
+  ],
+  "homepage": "https://github.com/rfprod/nx-ng-starter",
+  "bugs": {
+    "url": "https://github.com/rfprod/nx-ng-starter/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rfprod/nx-ng-starter"
+  },
+  "license": "MIT",
+  "author": "rfprod <zoidenmacht@zoho.com>",
+  "dependencies": {
+    "tslib": "2.6.2"
+  },
+  "peerDependencies": {
+    "@nestjs/common": "10.2.6",
+    "@nestjs/platform-ws": "10.2.6",
+    "@nestjs/websockets": "10.2.6",
+    "dotenv": "16.3.1",
+    "rxjs": "7.8.1"
+  }
+}

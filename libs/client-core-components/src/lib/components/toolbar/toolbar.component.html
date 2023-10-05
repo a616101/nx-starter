@@ -1,0 +1,40 @@
+<mat-toolbar color="primary" class="toolbar">
+  <button mat-icon-button (click)="toggleSidebar()">
+    <ng-container *ngTemplateOutlet="sidebarOpen ? sidebarOpenIcon : sidebarClosedIcon"></ng-container>
+  </button>
+
+  <span class="flex--full"></span>
+
+  <app-theme-toggle [darkThemeEnabled]="darkThemeEnabled" (themeToggled)="toggleTheme()"></app-theme-toggle>
+
+  <span class="flex--full"></span>
+
+  <button mat-icon-button [matMenuTriggerFor]="mobileMenuBottom">
+    <mat-icon>more_vert</mat-icon>
+  </button>
+
+  <mat-menu #mobileMenuBottom="matMenu">
+    <a mat-menu-item *ngFor="let anchor of anchors" [href]="anchor.href" target="_blank" rel="noreferrer">
+      <mat-icon>{{ anchor.icon }}</mat-icon> {{ anchor.title }}
+    </a>
+
+    <mat-divider></mat-divider>
+
+    <a mat-menu-item (click)="toggleChatbot()"> <mat-icon>chat_bubble_outline</mat-icon> Chat widget </a>
+
+    <mat-divider></mat-divider>
+
+    <div mat-menu-item disabled *ngIf="version">
+      <mat-icon>new_releases</mat-icon>
+      {{ version }}
+    </div>
+  </mat-menu>
+</mat-toolbar>
+
+<ng-template #sidebarOpenIcon>
+  <mat-icon appTooltip="Close sidenav"> flip_to_back </mat-icon>
+</ng-template>
+
+<ng-template #sidebarClosedIcon>
+  <mat-icon appTooltip="Open sidenav"> flip_to_front </mat-icon>
+</ng-template>

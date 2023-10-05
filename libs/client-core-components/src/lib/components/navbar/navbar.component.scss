@@ -1,0 +1,18 @@
+@use 'libs/client-core/src/lib/styles/partials/_flex.scss';
+
+:host {
+  display: block;
+}
+
+.toolbar {
+  height: 100%;
+
+  &--logo {
+    width: auto !important;
+    height: 48px;
+  }
+
+  &--actionable {
+    cursor: pointer;
+  }
+}

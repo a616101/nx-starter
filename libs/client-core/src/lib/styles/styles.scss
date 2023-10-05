@@ -1,0 +1,78 @@
+/* Angular Material Theme, and Typography customization */
+
+/* Documentation: https://github.com/angular/components/blob/main/guides/theming.md */
+@use '@angular/material' as mat;
+@use 'node_modules/@angular/material/_theming.scss';
+
+/**
+ * Define a custom typography config that overrides font-family, and all levels.
+ */
+
+$custom-typography: mat.define-typography-config(
+  $font-family: 'Roboto, monospace, "Helvetica Neue", sans-serif',
+);
+
+/**
+ * Include the common styles for Angular Material. Include this here so that you only
+ * have to load a single css file for Angular Material in your app.
+ * Be sure to include this mixin once!
+ * Custom typography config is passed to mat-core.
+ */
+@include mat.core();
+
+/* Define a custom light theme. */
+$candy-app-primary: mat.define-palette(mat.$green-palette, 700);
+$candy-app-accent: mat.define-palette(mat.$light-green-palette, 400);
+$candy-app-warn: mat.define-palette(mat.$red-palette, 800);
+$candy-app-theme: mat.define-light-theme(
+  (
+    color: (
+      primary: $candy-app-primary,
+      accent: $candy-app-accent,
+      warn: $candy-app-warn,
+    ),
+    density: 0,
+  )
+);
+
+/* Include the custom light theme styles. */
+@include mat.all-component-themes($candy-app-theme);
+
+@include mat.all-component-typographies($custom-typography);
+
+/* Define an alternate dark theme. */
+$unicorn-dark-primary: mat.define-palette(mat.$deep-orange-palette, 800);
+$unicorn-dark-accent: mat.define-palette(mat.$yellow-palette, 400);
+$unicorn-dark-warn: mat.define-palette(mat.$orange-palette, 300);
+$unicorn-dark-theme: mat.define-dark-theme(
+  (
+    color: (
+      primary: $unicorn-dark-primary,
+      accent: $unicorn-dark-accent,
+      warn: $unicorn-dark-warn,
+    ),
+    density: 0,
+  )
+);
+
+/**
+ * Include the alternative theme styles inside of a block with a CSS class.
+ * This CSS class can be whatever is needed. Any component inside of an element with
+ * `.unicorn-dark-theme` will be affected by the alternate dark theme instead of the light theme.
+ */
+
+.unicorn-dark-theme {
+  @include mat.all-component-colors($unicorn-dark-theme);
+}
+
+/**
+ * Material Theming extension.
+ * Imports and includes variables, and mixins:
+ * custom-selectors-colouring, custom-colouring-classes
+ */
+@import 'libs/client-core/src/lib/styles/theming/theming-extension.scss';
+
+/**
+ * Global common theming styles.
+ */
+@import 'libs/client-core/src/lib/styles/theming/theming-common.scss';

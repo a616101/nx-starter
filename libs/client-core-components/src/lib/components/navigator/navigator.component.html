@@ -1,0 +1,66 @@
+<button
+  mat-icon-button
+  (click)="back()"
+  appTooltip="Back"
+  [flexibleConnectedPositions]="[
+    {
+      originX: 'center',
+      originY: 'bottom',
+      overlayX: 'center',
+      overlayY: 'top'
+    }
+  ]"
+>
+  <mat-icon>navigate_before</mat-icon>
+</button>
+
+<button
+  mat-icon-button
+  (click)="toggleSearch()"
+  appTooltip="Route navigator, CTRL + SHIFT + S"
+  [flexibleConnectedPositions]="[
+    {
+      originX: 'center',
+      originY: 'bottom',
+      overlayX: 'center',
+      overlayY: 'top'
+    }
+  ]"
+  cdkOverlayOrigin
+  #searchTrigger="cdkOverlayOrigin"
+>
+  <mat-icon>explore</mat-icon>
+</button>
+
+<button
+  mat-icon-button
+  (click)="forward()"
+  appTooltip="Forward"
+  [flexibleConnectedPositions]="[
+    {
+      originX: 'center',
+      originY: 'bottom',
+      overlayX: 'center',
+      overlayY: 'top'
+    }
+  ]"
+>
+  <mat-icon>navigate_next</mat-icon>
+</button>
+
+<ng-template
+  cdkConnectedOverlay
+  [cdkConnectedOverlayOrigin]="searchTrigger"
+  [cdkConnectedOverlayOpen]="showSearch()"
+  [cdkConnectedOverlayHasBackdrop]="true"
+  [cdkConnectedOverlayPositions]="[
+    {
+      originX: 'center',
+      originY: 'bottom',
+      overlayX: 'center',
+      overlayY: 'top'
+    }
+  ]"
+>
+  <app-search class="search custom-overlay" (optionSelected)="toggleSearch()"></app-search>
+</ng-template>

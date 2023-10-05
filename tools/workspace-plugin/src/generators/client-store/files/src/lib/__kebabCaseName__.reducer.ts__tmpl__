@@ -1,0 +1,23 @@
+import { Injectable, Provider } from '@angular/core';
+import { createReducer, on } from '@ngrx/store';
+
+import { <%= camelCaseName %>Actions } from './<%= kebabCaseName %>.actions';
+import { <%= camelCaseName %>ReducerConfig, I<%= pascalCaseName %>StateModel } from './<%= kebabCaseName %>.interface';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class App<%= pascalCaseName %>Reducer {
+  public createReducer() {
+    return createReducer(
+      <%= camelCaseName %>ReducerConfig.initialState,
+      on(<%= camelCaseName %>Actions.action, state => ({ <%= camelCaseName %>: !state.<%= camelCaseName %> })),
+    );
+  }
+}
+
+export const <%= camelCaseName %>ReducerProvider: Provider = {
+  provide: <%= camelCaseName %>ReducerConfig.token,
+  deps: [App<%= pascalCaseName %>Reducer],
+  useFactory: (reducer: App<%= pascalCaseName %>Reducer) => reducer.createReducer(),
+};

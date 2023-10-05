@@ -1,0 +1,47 @@
+# For more information see:
+# - https://docs.github.com/en/actions/creating-actions/creating-a-composite-action
+# - https://docs.github.com/en/actions/creating-actions/metadata-syntax-for-github-actions#outputsoutput_id
+
+# The action can be referenced in workflows like:
+# uses: rfprod/nx-ng-starter/.github/actions/validate-contribution-size@main
+# or
+# uses: ./.github/actions/validate-contribution-size
+
+name: validate-contribution-size
+description: Validates contibution size.
+
+inputs:
+  max-files:
+    description: Max changed files
+    default: '10'
+    required: true
+  insertions:
+    description: Max insertions
+    default: '150'
+    required: true
+  deletions:
+    description: Max deletions
+    default: '150'
+    required: true
+  trunk:
+    description: Trunk (default branch) name.
+    required: true
+    default: 'main'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Install awk
+      shell: bash
+      run: |
+        sudo apt update
+        sudo apt install gawk
+
+    - name: Contribution size
+      shell: bash
+      run: npx nx run tools:action-contribution-size
+      env:
+        MAX_FILES: ${{ inputs.max-files }}
+        INSERTIONS: ${{ inputs.insertions }}
+        DELETIONS: ${{ inputs.deletions }}
+        ACTOR: ${{ github.triggering_actor }}

@@ -1,0 +1,14 @@
+# <%= name %>
+
+This library was generated with [Nx](https://nx.dev).
+
+## Print related commands
+
+```bash
+npx nx run tools:help --search <%= name %>:
+```
+
+## References
+
+- [Nx](https://nx.dev)
+- [Angular](https://angular.io)
